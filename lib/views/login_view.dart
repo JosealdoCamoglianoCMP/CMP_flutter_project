@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:cmp_flutter_web/providers/auth_provider.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
 import 'package:cmp_flutter_web/views/home_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -15,6 +19,7 @@ class _LoginViewState extends State<LoginView> {
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: Container(
         width: double.maxFinite,
@@ -101,6 +106,7 @@ class _LoginViewState extends State<LoginView> {
                           constraints: BoxConstraints.tightFor(
                               width: MediaQuery.of(context).size.width / 3),
                           child: TextFormField(
+                            obscureText: true,
                             controller: passwordController,
                             cursorColor: AppColors.textBlue,
                             decoration: InputDecoration(
@@ -119,8 +125,16 @@ class _LoginViewState extends State<LoginView> {
                               width: MediaQuery.of(context).size.width / 3),
                           child: FloatingActionButton.extended(
                               backgroundColor: AppColors.buttonPinkColor,
-                              onPressed: () {
-                                Navigator.pushNamed(context, HomeView.route);
+                              onPressed: () async {
+                                await authProvider.login(
+                                  userController.text,
+                                  passwordController.text,
+                                  context,
+                                );
+                                if (authProvider.user != null) {
+                                  inspect(authProvider.user!);
+                                  Navigator.pushNamed(context, HomeView.route);
+                                }
                               },
                               label: Text('LOGIN')),
                         ),

@@ -1,5 +1,7 @@
+import 'package:cmp_flutter_web/providers/auth_provider.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -9,12 +11,28 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  String x = '';
+  @override
+  void initState() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    x = authProvider.user!.user.username;
+    setState(() {});
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.textFieldBackColor,
       drawerScrimColor: Colors.transparent,
       appBar: AppBar(
+        title: Text(
+          'Hola ${x}',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
         leading: Builder(
           builder: (context) => GestureDetector(
             child: Image.asset('assets/cmp_drawer_logo.png'),

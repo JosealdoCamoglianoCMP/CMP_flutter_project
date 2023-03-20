@@ -1,9 +1,17 @@
+import 'package:cmp_flutter_web/providers/auth_provider.dart';
 import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:cmp_flutter_web/views/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
