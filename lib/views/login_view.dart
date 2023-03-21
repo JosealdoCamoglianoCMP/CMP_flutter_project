@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cmp_flutter_web/main.dart';
+import 'package:cmp_flutter_web/models/strapi_user_model.dart';
 import 'package:cmp_flutter_web/providers/auth_provider.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
 import 'package:cmp_flutter_web/views/home_view.dart';
@@ -132,7 +134,8 @@ class _LoginViewState extends State<LoginView> {
                                   context,
                                 );
                                 if (authProvider.user != null) {
-                                  inspect(authProvider.user!);
+                                  localStorage.setString(
+                                      'user', authProvider.user!.toJson());
                                   Navigator.pushNamed(context, HomeView.route);
                                 }
                               },

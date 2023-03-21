@@ -8,4 +8,5 @@ class AppColors {
   //APP COLORS
   static const textFieldBackColor = Color(0xffEDF8FB);
   static const buttonPinkColor = Color(0xffE43054);
+  static const lightBlueColor = Color(0xff3669FF);
 }

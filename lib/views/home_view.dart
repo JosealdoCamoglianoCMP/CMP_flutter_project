@@ -1,7 +1,8 @@
-import 'package:cmp_flutter_web/providers/auth_provider.dart';
+import 'package:cmp_flutter_web/main.dart';
+import 'package:cmp_flutter_web/models/strapi_user_model.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
+import 'package:cmp_flutter_web/widgets/side_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -11,79 +12,31 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  String x = '';
+  var name = '';
   @override
   void initState() {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    x = authProvider.user!.user.username;
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final user = StrapiUserModel.fromJson(localStorage.getString('user')!);
+      name = user.user.username;
+      setState(() {});
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: AppColors.textFieldBackColor,
+      backgroundColor: const Color.fromARGB(255, 173, 233, 250),
       drawerScrimColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text(
-          'Hola ${x}',
-          style: TextStyle(
-            color: Colors.black,
+      body: Row(
+        children: [
+          const SideBar(),
+          Expanded(
+            child: Container(
+              color: Colors.red,
+            ),
           ),
-        ),
-        leading: Builder(
-          builder: (context) => GestureDetector(
-            child: Image.asset('assets/cmp_drawer_logo.png'),
-            onTap: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [],
-      ),
-      drawer: Drawer(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Image.asset('assets/cmp_drawer_logo.png'),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Cloud Media Pro',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600, color: Color(0xff3669FF)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 32),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.temple_buddhist),
-                        const SizedBox(width: 16),
-                        Text(
-                          'Orders',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
