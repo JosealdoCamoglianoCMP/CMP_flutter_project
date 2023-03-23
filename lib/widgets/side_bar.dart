@@ -3,22 +3,18 @@ import 'package:cmp_flutter_web/providers/auth_provider.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-class SideBar extends StatefulWidget {
-  const SideBar({super.key});
-
-  @override
-  State<SideBar> createState() => _SideBarState();
-}
-
-class _SideBarState extends State<SideBar> {
+class SideBar extends StatelessWidget {
+  const SideBar({
+    super.key,
+    required SidebarXController controller,
+  }) : _controller = controller;
+  final SidebarXController _controller;
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     return SidebarX(
-      controller: SidebarXController(selectedIndex: 0, extended: true),
+      controller: _controller,
       headerBuilder: (context, extended) => SizedBox(
         height: 100,
         child: Row(
@@ -46,15 +42,14 @@ class _SideBarState extends State<SideBar> {
           onTap: () {},
         ),
         SidebarXItem(
-            iconWidget: const FaIcon(
-              FontAwesomeIcons.tag,
-              color: AppColors.lightBlueColor,
-              size: 16,
-            ),
-            label: 'Products',
-            onTap: () {
-              authProvider.currentPage = 'Products';
-            }),
+          iconWidget: const FaIcon(
+            FontAwesomeIcons.tag,
+            color: AppColors.lightBlueColor,
+            size: 16,
+          ),
+          label: 'Products',
+          onTap: () {},
+        ),
         SidebarXItem(
           iconWidget: const FaIcon(
             FontAwesomeIcons.user,
