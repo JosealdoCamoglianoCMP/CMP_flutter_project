@@ -10,6 +10,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _currentPage = 'orders';
+  String get currentPage => _currentPage;
+  set currentPage(String value) {
+    _currentPage = value;
+    notifyListeners();
+  }
+
   Future<void> login(
       String username, String password, BuildContext context) async {
     //TODO: LOADING

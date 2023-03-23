@@ -121,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         ConstrainedBox(
                           constraints: BoxConstraints.tightFor(
                               width: MediaQuery.of(context).size.width / 3),
@@ -141,7 +141,7 @@ class _LoginViewState extends State<LoginView> {
                               },
                               label: Text('LOGIN')),
                         ),
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
                         Text(
                           'Reset password',
                           style: TextStyle(
