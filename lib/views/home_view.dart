@@ -14,13 +14,16 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   var name = '';
-  final _controller = SidebarXController(selectedIndex: 0, extended: true);
+  var _controller = SidebarXController(
+      selectedIndex: localStorage.getInt('page') ?? 0, extended: true);
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final user = StrapiUserModel.fromJson(localStorage.getString('user')!);
       name = user.user.username;
+      _controller = SidebarXController(
+          selectedIndex: localStorage.getInt('page') ?? 0, extended: true);
       setState(() {});
     });
     super.initState();
@@ -36,38 +39,36 @@ class _HomeViewState extends State<HomeView> {
         children: [
           SideBar(controller: _controller),
           Expanded(
-            child: Center(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  final pageTitle = _getTitleByIndex(_controller.selectedIndex);
-                  switch (_controller.selectedIndex) {
-                    case 0:
-                      return ListView.builder(
-                        //   TODO : PRODUCTS TAB
-                        padding: const EdgeInsets.only(top: 10),
-                        itemBuilder: (context, index) => Container(
-                          height: 100,
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(
-                              bottom: 10, right: 10, left: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Theme.of(context).canvasColor,
-                            boxShadow: const [BoxShadow()],
-                          ),
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                final pageTitle = _getTitleByIndex(_controller.selectedIndex);
+                switch (_controller.selectedIndex) {
+                  case 0:
+                    return ListView.builder(
+                      //   TODO : PRODUCTS TAB
+                      padding: const EdgeInsets.only(top: 10),
+                      itemBuilder: (context, index) => Container(
+                        height: 100,
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(
+                            bottom: 10, right: 10, left: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Theme.of(context).canvasColor,
+                          boxShadow: const [BoxShadow()],
                         ),
-                      );
-                    case 1:
-                      return ProductsTab();
-                    default:
-                      return Text(
-                        pageTitle,
-                        style: theme.textTheme.headlineSmall,
-                      );
-                  }
-                },
-              ),
+                      ),
+                    );
+                  case 1:
+                    return const ProductsTab();
+                  default:
+                    return Text(
+                      pageTitle,
+                      style: theme.textTheme.headlineSmall,
+                    );
+                }
+              },
             ),
           ),
         ],

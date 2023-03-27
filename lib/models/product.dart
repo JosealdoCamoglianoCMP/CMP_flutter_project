@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 class Product {
   Product({
@@ -41,7 +42,7 @@ class Product {
   bool onSale;
   bool purchasable;
   bool manageStock;
-  int stockQuantity;
+  int? stockQuantity;
   String averageRating;
   int ratingCount;
   List<Category> categories;

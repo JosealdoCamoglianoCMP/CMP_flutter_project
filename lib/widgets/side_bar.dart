@@ -48,7 +48,8 @@ class SideBar extends StatelessWidget {
             size: 16,
           ),
           label: 'Products',
-          onTap: () {},
+          onTap: () async =>
+              localStorage.setInt('page', _controller.selectedIndex),
         ),
         SidebarXItem(
           iconWidget: const FaIcon(
@@ -97,40 +98,36 @@ class SideBar extends StatelessWidget {
         ),
       ],
       theme: SidebarXTheme(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          textStyle: const TextStyle(color: Colors.grey),
-          selectedTextStyle: const TextStyle(
-            color: AppColors.lightBlueColor,
-            fontWeight: FontWeight.w600,
-          ),
-          itemTextPadding: const EdgeInsets.only(left: 24),
-          selectedItemTextPadding: const EdgeInsets.only(left: 24),
-          iconTheme: const IconThemeData(
-            color: Colors.grey,
-            size: 20,
-          ),
-          selectedIconTheme: const IconThemeData(
-            color: AppColors.lightBlueColor,
-            size: 20,
-          ),
-          selectedItemDecoration: BoxDecoration(boxShadow: [
+        width: 52,
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        textStyle: const TextStyle(color: Colors.grey),
+        selectedTextStyle: const TextStyle(
+          color: AppColors.lightBlueColor,
+          fontWeight: FontWeight.w600,
+        ),
+        itemTextPadding: const EdgeInsets.only(left: 32),
+        selectedItemTextPadding: const EdgeInsets.only(left: 32),
+        selectedItemDecoration: BoxDecoration(
+          boxShadow: [
             BoxShadow(
               color: Colors.grey.shade300,
               blurRadius: 1,
               offset: Offset.zero,
             ),
-          ])),
+          ],
+        ),
+      ),
       extendedTheme: SidebarXTheme(
           width: 200,
+          margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          margin: const EdgeInsets.only(right: 10),
           selectedItemDecoration: const BoxDecoration(
             color: Colors.transparent,
           )),
