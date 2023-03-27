@@ -1,5 +1,6 @@
 import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/strapi_user_model.dart';
+import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
 import 'package:cmp_flutter_web/views/home_tabs/products_tab.dart';
 import 'package:cmp_flutter_web/widgets/side_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 173, 233, 250),
+      backgroundColor: AppColors.textFieldBackColor,
       drawerScrimColor: Colors.transparent,
       body: Row(
         children: [

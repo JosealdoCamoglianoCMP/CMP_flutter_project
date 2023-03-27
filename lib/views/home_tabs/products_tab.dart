@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cmp_flutter_web/models/product.dart';
 import 'package:cmp_flutter_web/services/product_service.dart';
 import 'package:flutter/material.dart';
+import 'package:scrollable_table_view/scrollable_table_view.dart';
 
 class ProductsTab extends StatefulWidget {
   const ProductsTab({super.key});
@@ -14,6 +15,14 @@ class ProductsTab extends StatefulWidget {
 class _ProductsTabState extends State<ProductsTab> {
   @override
   Widget build(BuildContext context) {
+    List<String> columns = [
+      'Name',
+      'Collection',
+      'Status',
+      'Availability',
+      'Inventory',
+      '...',
+    ];
     return FutureBuilder(
       future: ProductService().getProducts(),
       builder: (context, snapshot) {
@@ -35,42 +44,54 @@ class _ProductsTabState extends State<ProductsTab> {
               );
             } else {
               List<Product> lst = snapshot.data['data'];
+              List<Product> lstAux = snapshot.data['data'];
 
               if (lst.isEmpty) {
                 return const Center(
                   child: Text('Lista vacia'),
                 );
               } else {
-                return SizedBox.expand(
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Name')),
-                      DataColumn(label: Text('Collection')),
-                      DataColumn(label: Text('Status')),
-                      DataColumn(label: Text('Availability')),
-                      DataColumn(label: Text('Inventory')),
-                      DataColumn(label: Text('...')),
-                    ],
-                    rows: [
-                      ...lst.map((e) => DataRow(cells: [
-                            DataCell(Text(e.name)),
-                            DataCell(Text(e.categories.first.name)),
-                            DataCell(Text(e.status)),
-                            DataCell(Text(e.averageRating)),
-                            DataCell(Text(e.stockStatus)),
-                            const DataCell(Text('xd')),
-                          ])),
-                      ...lst.map((e) => DataRow(cells: [
-                            DataCell(Text(e.name)),
-                            DataCell(Text(e.categories.first.name)),
-                            DataCell(Text(e.status)),
-                            DataCell(Text(e.averageRating)),
-                            DataCell(Text(e.stockStatus)),
-                            const DataCell(Text('xd')),
-                          ]))
-                    ],
-                  ),
-                );
+                return LayoutBuilder(builder: (context, _) {
+                  final width = MediaQuery.of(context).size.width;
+
+                  return Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: ScrollableTableView(
+                      columns: columns.map((column) {
+                        return TableViewColumn(
+                          minWidth: width / 6,
+                          label: column,
+                        );
+                      }).toList(),
+                      rows: lst.map((record) {
+                        return TableViewRow(height: 60, cells: [
+                          TableViewCell(
+                            child: Text(record.name),
+                          ),
+                          TableViewCell(
+                            child: Text(record.categories.first.name),
+                          ),
+                          TableViewCell(
+                            child: Text(record.status),
+                          ),
+                          TableViewCell(
+                            child: Text(record.averageRating),
+                          ),
+                          TableViewCell(
+                            child: Text(record.stockStatus),
+                          ),
+                          TableViewCell(
+                            child: const Text('xd'),
+                          ),
+                        ]);
+                      }).toList(),
+                    ),
+                  );
+                });
               }
             }
           }
