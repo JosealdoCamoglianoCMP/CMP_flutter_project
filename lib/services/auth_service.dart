@@ -8,7 +8,7 @@ class AuthService {
   final app = AppConstants();
 
   Future<dynamic> login(String username, String password) async {
-    final url = Uri.https(app.strapiURL, '/api/auth/local');
+    final url = Uri.https(app.strapiUrl, '/api/auth/local');
     try {
       final response = await http.post(url,
           headers: app.headers,
