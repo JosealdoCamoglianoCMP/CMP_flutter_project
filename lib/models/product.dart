@@ -47,7 +47,7 @@ class Product {
   int ratingCount;
   List<Category> categories;
   List<dynamic> tags;
-  List<Image> images;
+  List<ProductImage> images;
   String stockStatus;
 
   factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
@@ -76,7 +76,8 @@ class Product {
         categories: List<Category>.from(
             json["categories"].map((x) => Category.fromMap(x))),
         tags: List<dynamic>.from(json["tags"].map((x) => x)),
-        images: List<Image>.from(json["images"].map((x) => Image.fromMap(x))),
+        images: List<ProductImage>.from(
+            json["images"].map((x) => ProductImage.fromMap(x))),
         stockStatus: json["stock_status"],
       );
 
@@ -134,8 +135,8 @@ class Category {
       };
 }
 
-class Image {
-  Image({
+class ProductImage {
+  ProductImage({
     required this.id,
     required this.src,
     required this.name,
@@ -145,11 +146,12 @@ class Image {
   String src;
   String name;
 
-  factory Image.fromJson(String str) => Image.fromMap(json.decode(str));
+  factory ProductImage.fromJson(String str) =>
+      ProductImage.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Image.fromMap(Map<String, dynamic> json) => Image(
+  factory ProductImage.fromMap(Map<String, dynamic> json) => ProductImage(
         id: json["id"],
         src: json["src"],
         name: json["name"],

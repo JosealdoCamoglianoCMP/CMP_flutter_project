@@ -17,6 +17,7 @@ class ProductService {
       if (response.statusCode == 200) {
         return {
           'success': true,
+          'status': response.statusCode,
           'message': 'Exito',
           'data': (json.decode(response.body) as List)
               .map((data) => Product.fromMap(data))
@@ -25,6 +26,7 @@ class ProductService {
       } else {
         return {
           'success': false,
+          'status': 400,
           'message': 'Error al traer productos',
           'data': [],
         };
@@ -32,6 +34,7 @@ class ProductService {
     } catch (e) {
       return {
         'success': false,
+        'status': 500,
         'message': 'Error del servidor, vuelve a intentar en un momento.',
         'data': []
       };
