@@ -1,5 +1,7 @@
 import 'package:cmp_flutter_web/providers/auth_provider.dart';
+import 'package:cmp_flutter_web/shared/helpers/scroll_behavior_helper.dart';
 import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
+import 'package:cmp_flutter_web/shared/theme/app_theme.dart';
 import 'package:cmp_flutter_web/views/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +24,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: ((_) => AuthProvider())),
       ],
       child: MaterialApp(
+        scrollBehavior: ScrollBehaviorHelper(),
         debugShowCheckedModeBanner: false,
         title: 'Cloud Media Pro Dashboard',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          //        fontFamily: 'OoohBaby',
-        ),
+        theme: AppTheme.principalAppTheme,
         routes: AppRoutes.routes,
         initialRoute: LoginView.route,
       ),
