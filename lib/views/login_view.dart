@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/strapi_user_model.dart';
 import 'package:cmp_flutter_web/providers/auth_provider.dart';
+import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
-import 'package:cmp_flutter_web/views/home_view.dart';
+import 'package:cmp_flutter_web/views/home/home_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
@@ -136,13 +138,13 @@ class _LoginViewState extends State<LoginView> {
                                 if (authProvider.user != null) {
                                   localStorage.setString(
                                       'user', authProvider.user!.toJson());
-                                  Navigator.pushNamed(context, HomeView.route);
+                                  Get.rootDelegate.toNamed(Routes.home);
                                 }
                               },
                               label: Text('LOGIN')),
                         ),
                         const SizedBox(height: 40),
-                        Text(
+                        const Text(
                           'Reset password',
                           style: TextStyle(
                             color: AppColors.textGrey,

@@ -1,9 +1,10 @@
+import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/product.dart';
 import 'package:cmp_flutter_web/services/product_service.dart';
-import 'package:cmp_flutter_web/views/product_views.dart/product_add_view.dart';
-import 'package:cmp_flutter_web/views/product_views.dart/product_detail_view.dart';
+import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scrollable_table_view/scrollable_table_view.dart';
 
 class ProductsTab extends StatefulWidget {
@@ -76,7 +77,7 @@ class _ProductsTabState extends State<ProductsTab> {
                   backgroundColor: Colors.green,
                   extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
                   onPressed: () {
-                    Navigator.pushNamed(context, ProductAddView.route);
+                    Get.rootDelegate.toNamed(Routes.productAdd);
                   },
                   label: Row(
                     children: const [
@@ -171,10 +172,11 @@ class _ProductsTabState extends State<ProductsTab> {
                         }).toList(),
                         rows: lst.map((product) {
                           return TableViewRow(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, ProductDetailView.route,
-                                  arguments: product);
+                            onTap: () async {
+                              await localStorage.setString(
+                                  'currentProduct', product.toJson());
+                              if (!mounted) return;
+                              Get.rootDelegate.toNamed(Routes.productDetail);
                             },
                             height: 60,
                             cells: [
