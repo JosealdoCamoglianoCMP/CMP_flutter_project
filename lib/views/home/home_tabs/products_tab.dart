@@ -2,6 +2,7 @@ import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/product.dart';
 import 'package:cmp_flutter_web/services/product_service.dart';
 import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
+import 'package:cmp_flutter_web/widgets/option_button.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -72,25 +73,13 @@ class _ProductsTabState extends State<ProductsTab> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               children: [
-                FloatingActionButton.extended(
-                  elevation: 0,
-                  backgroundColor: Colors.green,
-                  extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  onPressed: () {
+                OptionButton(
+                  color: Colors.green,
+                  icon: Icons.add,
+                  text: 'New',
+                  function: () {
                     Get.rootDelegate.toNamed(Routes.productAdd);
                   },
-                  label: Row(
-                    children: const [
-                      Icon(Icons.add),
-                      SizedBox(width: 4),
-                      Text(
-                        'New',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )
-                    ],
-                  ),
                 ),
                 const SizedBox(width: 64),
                 SizedBox(

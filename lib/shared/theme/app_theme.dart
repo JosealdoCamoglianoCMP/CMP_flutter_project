@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static final principalAppTheme = ThemeData(
+    scaffoldBackgroundColor: AppColors.textFieldBackColor,
     inputDecorationTheme: InputDecorationTheme(
       suffixIconColor: AppColors.textGrey,
       border: OutlineInputBorder(
