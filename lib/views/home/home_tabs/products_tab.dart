@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/product.dart';
 import 'package:cmp_flutter_web/services/product_service.dart';
@@ -5,6 +7,7 @@ import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:cmp_flutter_web/widgets/option_button.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:scrollable_table_view/scrollable_table_view.dart';
 
@@ -17,7 +20,8 @@ class ProductsTab extends StatefulWidget {
 
 class _ProductsTabState extends State<ProductsTab> {
   final isLoading = ValueNotifier<bool>(true);
-
+  late PaginationController paginationController =
+      PaginationController(rowCount: 0, rowsPerPage: 1);
   List<String> columns = [
     'Name',
     'Collection',
@@ -34,7 +38,16 @@ class _ProductsTabState extends State<ProductsTab> {
 
   @override
   void initState() {
-    getProducts().then((value) => isLoading.value = false);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      getProducts().then((value) {
+        setState(() {
+          paginationController =
+              PaginationController(rowCount: lst.length, rowsPerPage: 8);
+          inspect(paginationController);
+          isLoading.value = false;
+        });
+      });
+    });
     super.initState();
   }
 
@@ -97,6 +110,7 @@ class _ProductsTabState extends State<ProductsTab> {
                     dropdownDecoratorProps: const DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
                           labelText: "Category",
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
                             borderSide: BorderSide.none,
@@ -126,7 +140,9 @@ class _ProductsTabState extends State<ProductsTab> {
                             borderSide: BorderSide.none,
                           )),
                     ),
-                    onChanged: (s) {},
+                    onChanged: (s) {
+                      setState(() {});
+                    },
                   ),
                 ),
               ],
@@ -153,6 +169,7 @@ class _ProductsTabState extends State<ProductsTab> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: ScrollableTableView(
+                        paginationController: paginationController,
                         columns: columns.map((column) {
                           return TableViewColumn(
                             minWidth: 300,
@@ -262,6 +279,53 @@ class _ProductsTabState extends State<ProductsTab> {
               }
             },
           ),
+          ValueListenableBuilder(
+              valueListenable: paginationController,
+              builder: (context, value, _) {
+                return Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                        "${paginationController.currentPage} of ${paginationController.pageCount}"),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: paginationController.currentPage <= 1
+                              ? null
+                              : () {
+                                  paginationController.previous();
+                                },
+                          iconSize: 20,
+                          splashRadius: 20,
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: paginationController.currentPage <= 1
+                                ? Colors.black26
+                                : Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: paginationController.currentPage >=
+                                  paginationController.pageCount
+                              ? null
+                              : () {
+                                  paginationController.next();
+                                },
+                          iconSize: 20,
+                          splashRadius: 20,
+                          icon: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: paginationController.currentPage >=
+                                    paginationController.pageCount
+                                ? Colors.black26
+                                : Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }),
         ],
       ),
     );
@@ -272,8 +336,8 @@ class _ProductsTabState extends State<ProductsTab> {
     if (r['success']) {
       lst = r['data'];
       status = r['status'];
-
       lstAux = r['data'];
+      log(lst.length.toString());
     } else {
       status = r['status'];
       message = r['message'];
