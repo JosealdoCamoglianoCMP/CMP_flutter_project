@@ -20,6 +20,8 @@ class ProductsTab extends StatefulWidget {
 
 class _ProductsTabState extends State<ProductsTab> {
   final isLoading = ValueNotifier<bool>(true);
+  final isSearching = ValueNotifier<bool>(false);
+
   late PaginationController paginationController =
       PaginationController(rowCount: 0, rowsPerPage: 1);
   List<String> columns = [
@@ -69,7 +71,12 @@ class _ProductsTabState extends State<ProductsTab> {
             ),
             style: const TextStyle(fontSize: 24),
             onChanged: (s) {
-              if (s.isEmpty) lst = lstAux;
+              if (s.isEmpty) {
+                lst = lstAux;
+                isSearching.value = false;
+              } else {
+                isSearching.value = true;
+              }
               setState(() {
                 lst = lst
                     .where(
@@ -169,7 +176,8 @@ class _ProductsTabState extends State<ProductsTab> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: ScrollableTableView(
-                        paginationController: paginationController,
+                        paginationController:
+                            isSearching.value ? null : paginationController,
                         columns: columns.map((column) {
                           return TableViewColumn(
                             minWidth: 300,
@@ -279,53 +287,54 @@ class _ProductsTabState extends State<ProductsTab> {
               }
             },
           ),
-          ValueListenableBuilder(
-              valueListenable: paginationController,
-              builder: (context, value, _) {
-                return Row(
-                  children: [
-                    const Spacer(),
-                    Text(
-                        "${paginationController.currentPage} of ${paginationController.pageCount}"),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: paginationController.currentPage <= 1
-                              ? null
-                              : () {
-                                  paginationController.previous();
-                                },
-                          iconSize: 20,
-                          splashRadius: 20,
-                          icon: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: paginationController.currentPage <= 1
-                                ? Colors.black26
-                                : Theme.of(context).primaryColor,
+          if (isSearching.value == false)
+            ValueListenableBuilder(
+                valueListenable: paginationController,
+                builder: (context, value, _) {
+                  return Row(
+                    children: [
+                      const Spacer(),
+                      Text(
+                          "${paginationController.currentPage} of ${paginationController.pageCount}"),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: paginationController.currentPage <= 1
+                                ? null
+                                : () {
+                                    paginationController.previous();
+                                  },
+                            iconSize: 20,
+                            splashRadius: 20,
+                            icon: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: paginationController.currentPage <= 1
+                                  ? Colors.black26
+                                  : Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: paginationController.currentPage >=
-                                  paginationController.pageCount
-                              ? null
-                              : () {
-                                  paginationController.next();
-                                },
-                          iconSize: 20,
-                          splashRadius: 20,
-                          icon: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: paginationController.currentPage >=
+                          IconButton(
+                            onPressed: paginationController.currentPage >=
                                     paginationController.pageCount
-                                ? Colors.black26
-                                : Theme.of(context).primaryColor,
+                                ? null
+                                : () {
+                                    paginationController.next();
+                                  },
+                            iconSize: 20,
+                            splashRadius: 20,
+                            icon: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: paginationController.currentPage >=
+                                      paginationController.pageCount
+                                  ? Colors.black26
+                                  : Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }),
+                        ],
+                      ),
+                    ],
+                  );
+                }),
         ],
       ),
     );

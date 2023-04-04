@@ -1,11 +1,10 @@
 import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/product.dart';
-import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:cmp_flutter_web/shared/theme/app_colors.dart';
-import 'package:cmp_flutter_web/views/home/home_view.dart';
+import 'package:cmp_flutter_web/views/products/product_widgets/product_image_widget.dart';
+import 'package:cmp_flutter_web/views/products/product_widgets/product_info.dart';
 import 'package:cmp_flutter_web/widgets/option_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ProductDetailView extends StatefulWidget {
   const ProductDetailView({
@@ -26,6 +25,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -58,32 +59,61 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Wrap(
-          children: [
-            Container(
-              width: 450,
-              height: 450,
-              color: Colors.red,
+      body: width <= 700
+          ? SizedBox.expand(
+              child: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  ProductImageWidget(url: product.images.first.src),
+                  ProductInfoWidget(product: product, width: width),
+                  Container(
+                    width: double.maxFinite,
+                    height: 500,
+                    color: Colors.red,
+                    child: Text('Hola'),
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    height: 500,
+                    color: Colors.red,
+                    child: Text('Hola'),
+                  ),
+                ],
+              )),
+            )
+          : SingleChildScrollView(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Wrap(
+                  children: [
+                    ProductImageWidget(
+                      url: product.images.first.src,
+                      witdh: 400,
+                      height: 400,
+                    ),
+                    ProductInfoWidget(product: product, width: width),
+                    Container(
+                      height: 400,
+                      color: Colors.green,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(
+                            'GREEN',
+                            style: TextStyle(fontSize: 150),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: 450,
+                      color: Colors.purple,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Container(
-              width: 450,
-              height: 450,
-              color: Colors.amber,
-            ),
-            Container(
-              width: 450,
-              height: 450,
-              color: Colors.green,
-            ),
-            Container(
-              width: 450,
-              height: 450,
-              color: Colors.purple,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
