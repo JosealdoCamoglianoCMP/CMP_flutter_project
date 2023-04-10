@@ -95,10 +95,10 @@ class _LoginViewState extends State<LoginView> {
                           child: TextFormField(
                             controller: userController,
                             cursorColor: AppColors.textBlue,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               filled: true,
                               fillColor: AppColors.textFieldBackColor,
-                              contentPadding: const EdgeInsets.all(8),
+                              contentPadding: EdgeInsets.all(8),
                               border: InputBorder.none,
                               prefixIcon: Icon(Icons.person),
                               label: Text('Username'),

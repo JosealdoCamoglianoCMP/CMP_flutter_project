@@ -21,6 +21,8 @@ class ProductsTab extends StatefulWidget {
 class _ProductsTabState extends State<ProductsTab> {
   final isLoading = ValueNotifier<bool>(true);
   final isSearching = ValueNotifier<bool>(false);
+  final productPage = ValueNotifier<int>(1);
+  final lastPage = ValueNotifier<int>(0);
 
   late PaginationController paginationController =
       PaginationController(rowCount: 0, rowsPerPage: 1);
@@ -30,7 +32,7 @@ class _ProductsTabState extends State<ProductsTab> {
     'Status',
     'Availability',
     'Inventory',
-    '...',
+    'Options',
   ];
   late int status;
   late String message;
@@ -44,8 +46,7 @@ class _ProductsTabState extends State<ProductsTab> {
       getProducts().then((value) {
         setState(() {
           paginationController =
-              PaginationController(rowCount: lst.length, rowsPerPage: 8);
-          inspect(paginationController);
+              PaginationController(rowCount: lst.length, rowsPerPage: 20);
           isLoading.value = false;
         });
       });
@@ -270,8 +271,22 @@ class _ProductsTabState extends State<ProductsTab> {
                                     : product.stockQuantity.toString()),
                               ),
                               TableViewCell(
-                                child: const Text('xd'),
-                              ),
+                                  child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    color: Colors.blue,
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.edit),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    color: Colors.red,
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.delete),
+                                  )
+                                ],
+                              )),
                             ],
                           );
                         }).toList(),
@@ -316,7 +331,18 @@ class _ProductsTabState extends State<ProductsTab> {
                           IconButton(
                             onPressed: paginationController.currentPage >=
                                     paginationController.pageCount
-                                ? null
+                                ? () async {
+                                    isLoading.value = true;
+                                    productPage.value = productPage.value + 1;
+                                    lastPage.value = lastPage.value + 3;
+                                    await getProducts();
+                                    paginationController = PaginationController(
+                                        rowCount: lst.length, rowsPerPage: 20);
+                                    paginationController
+                                        .jumpTo(lastPage.value + 1);
+                                    setState(() {});
+                                    isLoading.value = false;
+                                  }
                                 : () {
                                     paginationController.next();
                                   },
@@ -341,11 +367,12 @@ class _ProductsTabState extends State<ProductsTab> {
   }
 
   Future getProducts() async {
-    final r = await ProductService().getProducts();
+    final r = await ProductService().getProducts(productPage.value);
     if (r['success']) {
-      lst = r['data'];
+      final List<Product> data = r['data'];
+      lst.addAll(data);
+      lstAux.addAll(data);
       status = r['status'];
-      lstAux = r['data'];
       log(lst.length.toString());
     } else {
       status = r['status'];

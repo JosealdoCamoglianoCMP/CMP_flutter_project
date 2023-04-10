@@ -7,10 +7,12 @@ import 'package:http/http.dart' as http;
 class ProductService {
   final app = AppConstants();
 
-  Future<dynamic> getProducts() async {
+  Future<dynamic> getProducts(int page) async {
     final url = Uri.https(app.cmpUrl, '/wp-json/wc/v3/products', {
       'consumer_key': app.consumerKey,
       'consumer_secret': app.consumerSecret,
+      'per_page': '60',
+      'page': page.toString(),
     });
     try {
       final response = await http.get(url);
