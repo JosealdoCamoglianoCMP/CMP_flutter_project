@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cmp_flutter_web/main.dart';
 import 'package:cmp_flutter_web/models/product.dart';
 import 'package:cmp_flutter_web/services/product_service.dart';
+import 'package:cmp_flutter_web/shared/helpers/debouncer_helper.dart';
 import 'package:cmp_flutter_web/shared/routes/app_routes.dart';
 import 'package:cmp_flutter_web/widgets/option_button.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -19,11 +21,14 @@ class ProductsTab extends StatefulWidget {
 }
 
 class _ProductsTabState extends State<ProductsTab> {
+  final searchController = TextEditingController();
   final isLoading = ValueNotifier<bool>(true);
   final isSearching = ValueNotifier<bool>(false);
   final productPage = ValueNotifier<int>(1);
   final lastPage = ValueNotifier<int>(0);
-
+  final debouncer = DebouncerHelper(
+    duration: const Duration(milliseconds: 500),
+  );
   late PaginationController paginationController =
       PaginationController(rowCount: 0, rowsPerPage: 1);
   List<String> columns = [
@@ -61,29 +66,57 @@ class _ProductsTabState extends State<ProductsTab> {
       child: Column(
         children: [
           TextFormField(
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.all(16),
+            controller: searchController,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(16),
               hintText: 'Search product',
-              hintStyle: TextStyle(fontSize: 24),
-              suffixIcon: Icon(
-                Icons.search,
-                size: 28,
+              hintStyle: const TextStyle(fontSize: 24),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => setState(() {
+                      searchController.clear();
+                      lst = lstAux;
+                      isSearching.value = false;
+                    }),
+                    child: const Icon(
+                      Icons.cancel,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
               ),
             ),
             style: const TextStyle(fontSize: 24),
             onChanged: (s) {
+              isLoading.value = true;
               if (s.isEmpty) {
                 lst = lstAux;
                 isSearching.value = false;
               } else {
                 isSearching.value = true;
               }
-              setState(() {
-                lst = lst
-                    .where(
-                        (e) => e.name.toUpperCase().contains(s.toUpperCase()))
-                    .toList();
+
+              debouncer.value = '';
+              debouncer.onValue = (value) async {
+                var results = await ProductService().getProducts(1, search: s);
+                lst = results['data'];
+                isLoading.value = false;
+              };
+              final timer =
+                  Timer.periodic(const Duration(milliseconds: 300), (_) {
+                debouncer.value = s;
               });
+              Future.delayed(const Duration(milliseconds: 301))
+                  .then((_) => timer.cancel());
+              setState(() {});
             },
           ),
           const SizedBox(height: 10),
